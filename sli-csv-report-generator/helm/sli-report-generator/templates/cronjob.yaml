@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "grafana-report-generator.fullname" . }}
+  labels:
+    {{- include "grafana-report-generator.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.schedule }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "grafana-report-generator.serviceAccountName" . }}
+          imagePullSecrets:
+          - name: {{ .Values.imagePullSecretName }}
+          containers:
+            - name: {{ .Chart.Name }}
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              env:
+                - name: THANOS_URL
+                  value: {{ .Values.thanosUrl }}
+                - name: CLUSTERS
+                  value: {{ .Values.clusters }}
+                - name: EXCEL_FILE_NAME
+                  value: {{ .Values.excelFileName }}
+                - name: AZURE_EMAIL_ENDPOINT
+                  value: {{ .Values.azureEmailEndpoint }}
+          restartPolicy: Never

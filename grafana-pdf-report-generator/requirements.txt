@@ -1,0 +1,2 @@
+azure-communication-email
+azure-identity

@@ -1,0 +1,69 @@
+
+
+image:
+  repository: registry.sli.de/report/send_report
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v1.0.5"
+
+imagePullSecretName: harborimagepullkey
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: 
+    "azure.workload.identity/client-id": "123-abc"
+    "azure.workload.identity/tenant-id": "456-abc"
+  
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+schedule: "0 0 1 * *"
+
+grafanaApiKeySecretName: "grafana-api-key"
+
+grafanaHostname: "grafana-mon.internal.devops.mycompany.de"
+
+grafanaDashboard: "bysnYUnSz"
+
+grafanaCmdTs: "from=now-30d"
+
+grafanaCmdCluster: "var-cluster=cluster01"
+
+grafanaCmdO: "/app/out.pdf"
+
+grafanaSslCheck: 'false'
+
+grafanaProto: "https://"
+
+azureEmailEndpoint: "https://email-send-the-slo.europe.communication.azure.com/"
+
+

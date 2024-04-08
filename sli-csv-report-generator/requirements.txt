@@ -1,0 +1,5 @@
+azure-communication-email
+azure-identity
+requests
+pandas
+openpyxl

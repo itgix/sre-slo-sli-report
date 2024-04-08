@@ -1,0 +1,59 @@
+
+
+image:
+  repository: registry.sli.de/report/send_report
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v2.0.0"
+
+imagePullSecretName: harborimagepullkey
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: 
+    "azure.workload.identity/client-id": "123-abc"
+    "azure.workload.identity/tenant-id": "456-abc"
+  
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+schedule: "0 0 1 * *"
+
+thanosUrl: "http://cluster03-thanos-query-frontend.thanos.svc.cluster.local:9090/api/v1/query"
+
+clusters: "cluster01, cluster02, cluster03, cluster04"
+
+excelFileName: "/app/cluster_sli_report.xlsx"
+
+azureEmailEndpoint: "https://email-send-the-slo.europe.communication.azure.com/"
+
+

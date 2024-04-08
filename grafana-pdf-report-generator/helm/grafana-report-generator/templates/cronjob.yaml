@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "grafana-report-generator.fullname" . }}
+  labels:
+    {{- include "grafana-report-generator.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.schedule }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "grafana-report-generator.serviceAccountName" . }}
+          imagePullSecrets:
+          - name: {{ .Values.imagePullSecretName }}
+          containers:
+            - name: {{ .Chart.Name }}
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              env:
+                - name: GRAFANA_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.grafanaApiKeySecretName }}
+                      key: api_key
+                - name: GRAFANA_HOSTNAME
+                  value: {{ .Values.grafanaHostname }}
+                - name: GRAFANA_DASHBOARD
+                  value: {{ .Values.grafanaDashboard }}
+                - name: GRAFANA_CMD_TS
+                  value: {{ .Values.grafanaCmdTs }}
+                - name: GRAFANA_CMD_VAR_CLUSTER
+                  value: {{ .Values.grafanaCmdCluster }}
+                - name: GRAFANA_CMD_O
+                  value: {{ .Values.grafanaCmdO }}
+                - name: GRAFANA_SSL_CHECK
+                  value: "{{ .Values.grafanaSslCheck }}"
+                - name: GRAFANA_PROTO
+                  value: {{ .Values.grafanaProto }}
+                - name: AZURE_EMAIL_ENDPOINT
+                  value: {{ .Values.azureEmailEndpoint }}
+          restartPolicy: Never
